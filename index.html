@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Wishlist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div id="app">
+        <header class="main-header">
+            <div class="header-content">
+                <div class="brand-row">
+                    <div class="brand">
+                        <div class="logo-box">
+                            <i data-lucide="sparkles" class="logo-icon"></i>
+                        </div>
+                        <div>
+                            <h1>APEX WISHLIST</h1>
+                            <p class="subtitle">TRACK SKINS · EMOTES · HEIRLOOMS · LEGENDS & MORE</p>
+                        </div>
+                    </div>
+                    <button id="openAddBtn" class="btn-primary">
+                        <i data-lucide="plus"></i> ADD ITEM
+                    </button>
+                </div>
+
+                <div class="stats-bar" id="statsBar">
+                    </div>
+            </div>
+
+            <nav class="tabs">
+                <button class="tab-btn active" data-tab="wishlist">◈ WISHLIST</button>
+                <button class="tab-btn" data-tab="crafting">⬡ CRAFTING</button>
+                <button class="tab-btn" data-tab="stats">▣ STATS</button>
+            </nav>
+        </header>
+
+        <main class="container">
+            <section id="wishlist-tab" class="tab-content active">
+                <div class="filter-row">
+                    <select id="filterCategory"></select>
+                    <select id="filterRarity">
+                        <option value="all">All Rarities</option>
+                        <option value="Common">Common</option>
+                        <option value="Rare">Rare</option>
+                        <option value="Epic">Epic</option>
+                        <option value="Legendary">Legendary</option>
+                        <option value="Heirloom">Heirloom</option>
+                    </select>
+                    <select id="filterStatus">
+                        <option value="all">All Status</option>
+                        <option value="wanted">Wanted</option>
+                        <option value="obtained">Obtained</option>
+                    </select>
+                    <select id="filterPriority">
+                        <option value="all">All Priorities</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                    <span id="itemCount" class="item-count">0 items</span>
+                </div>
+                <div id="wishlistGrid" class="grid"></div>
+            </section>
+
+            <section id="crafting-tab" class="tab-content">
+                <div class="api-card">
+                    <label class="label-mini">API KEY — apexlegendsapi.com</label>
+                    <div class="input-group">
+                        <input type="password" id="apiKeyInput" placeholder="Enter your free API key...">
+                        <button id="fetchCraftingBtn" class="btn-primary">
+                            <i data-lucide="refresh-cw" id="refreshIcon"></i> FETCH
+                        </button>
+                    </div>
+                </div>
+                <div id="craftingGrid" class="grid"></div>
+            </section>
+
+            <section id="stats-tab" class="tab-content">
+                <div id="statsBreakdown"></div>
+            </section>
+        </main>
+
+        <div id="modalOverlay" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2>◈ ADD TO WISHLIST</h2>
+                    <button id="closeModalBtn" class="btn-icon"><i data-lucide="x"></i></button>
+                </div>
+                <div class="form-grid">
+                    <div>
+                        <label class="label-mini">ITEM NAME *</label>
+                        <input type="text" id="formName" placeholder="e.g. Void Prowler">
+                    </div>
+                    <div>
+                        <label class="label-mini">CATEGORY</label>
+                        <select id="formCategory"></select>
+                    </div>
+                    <div>
+                        <label class="label-mini">LEGEND / WEAPON (OPTIONAL)</label>
+                        <input type="text" id="formLegend" placeholder="e.g. Wraith">
+                    </div>
+                    <div>
+                        <label class="label-mini">RARITY</label>
+                        <div class="btn-group" id="rarityButtons"></div>
+                    </div>
+                    <div class="row-2">
+                        <div>
+                            <label class="label-mini">CURRENCY</label>
+                            <select id="formCurrency"></select>
+                        </div>
+                        <div>
+                            <label class="label-mini">COST</label>
+                            <input type="number" id="formCost">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label-mini">PRIORITY</label>
+                        <div class="btn-group" id="priorityButtons"></div>
+                    </div>
+                    <div>
+                        <label class="label-mini">NOTES (OPTIONAL)</label>
+                        <textarea id="formNotes" rows="2"></textarea>
+                    </div>
+                    <button id="saveItemBtn" class="btn-primary full-width">ADD TO WISHLIST</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
