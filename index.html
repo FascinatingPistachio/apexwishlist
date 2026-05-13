@@ -3,28 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex Wishlist</title>
+    <title>Apex Wishlist | Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+
+    <div id="keyGatekeeper" class="modal-overlay gatekeeper">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>🔑 API ACCESS REQUIRED</h2>
+            </div>
+            <p class="subtitle">Enter your ApexLegendsAPI.com key to sync crafting and data.</p>
+            <input type="password" id="gatekeeperInput" placeholder="Paste your API key here...">
+            <button id="saveGatekeeperKey" class="btn-primary full-width">INITIALIZE SYSTEM</button>
+            <p class="note">Stored locally in your browser. Never uploaded to servers.</p>
+        </div>
+    </div>
+
     <div id="app">
         <header class="main-header">
             <div class="header-content">
                 <div class="brand-row">
                     <div class="brand">
-                        <div class="logo-box">
-                            <i data-lucide="sparkles" class="logo-icon"></i>
-                        </div>
+                        <div class="logo-box"><i data-lucide="sparkles"></i></div>
                         <div>
                             <h1>APEX WISHLIST</h1>
-                            <p class="subtitle">TRACK SKINS · EMOTES · HEIRLOOMS · LEGENDS & MORE</p>
+                            <p class="subtitle">TRACK SKINS · HEIRLOOMS · CRAFTING</p>
                         </div>
                     </div>
-                    <button id="openAddBtn" class="btn-primary">
-                        <i data-lucide="plus"></i> ADD ITEM
-                    </button>
+                    <div class="header-actions">
+                        <button id="openAddBtn" class="btn-primary"><i data-lucide="plus"></i> ADD ITEM</button>
+                        <button onclick="clearApiKey()" class="btn-icon-alt" title="Clear API Key"><i data-lucide="key"></i></button>
+                    </div>
                 </div>
 
                 <div class="stats-bar" id="statsBar">
@@ -55,32 +67,23 @@
                         <option value="wanted">Wanted</option>
                         <option value="obtained">Obtained</option>
                     </select>
-                    <select id="filterPriority">
-                        <option value="all">All Priorities</option>
-                        <option value="High">High</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Low">Low</option>
-                    </select>
-                    <span id="itemCount" class="item-count">0 items</span>
+                    <span id="itemCount" class="item-count"></span>
                 </div>
                 <div id="wishlistGrid" class="grid"></div>
             </section>
 
             <section id="crafting-tab" class="tab-content">
-                <div class="api-card">
-                    <label class="label-mini">API KEY — apexlegendsapi.com</label>
-                    <div class="input-group">
-                        <input type="password" id="apiKeyInput" placeholder="Enter your free API key...">
-                        <button id="fetchCraftingBtn" class="btn-primary">
-                            <i data-lucide="refresh-cw" id="refreshIcon"></i> FETCH
-                        </button>
-                    </div>
+                <div class="api-status-card">
+                    <p>Fetching real-time replicator rotation via API...</p>
+                    <button id="fetchCraftingBtn" class="btn-primary">
+                        <i data-lucide="refresh-cw" id="refreshIcon"></i> SYNC ROTATION
+                    </button>
                 </div>
                 <div id="craftingGrid" class="grid"></div>
             </section>
 
             <section id="stats-tab" class="tab-content">
-                <div id="statsBreakdown"></div>
+                <div id="statsBreakdown" class="stats-grid"></div>
             </section>
         </main>
 
@@ -91,45 +94,55 @@
                     <button id="closeModalBtn" class="btn-icon"><i data-lucide="x"></i></button>
                 </div>
                 <div class="form-grid">
-                    <div>
-                        <label class="label-mini">ITEM NAME *</label>
-                        <input type="text" id="formName" placeholder="e.g. Void Prowler">
+                    <label class="label-mini">ITEM NAME *</label>
+                    <input type="text" id="formName" placeholder="e.g. Void Prowler">
+                    
+                    <label class="label-mini">CATEGORY</label>
+                    <select id="formCategory"></select>
+
+                    <div class="row-2">
+                        <div>
+                            <label class="label-mini">RARITY</label>
+                            <select id="formRarity">
+                                <option value="Common">Common</option>
+                                <option value="Rare">Rare</option>
+                                <option value="Epic">Epic</option>
+                                <option value="Legendary" selected>Legendary</option>
+                                <option value="Heirloom">Heirloom</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="label-mini">PRIORITY</label>
+                            <select id="formPriority">
+                                <option value="High">High</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label class="label-mini">CATEGORY</label>
-                        <select id="formCategory"></select>
-                    </div>
-                    <div>
-                        <label class="label-mini">LEGEND / WEAPON (OPTIONAL)</label>
-                        <input type="text" id="formLegend" placeholder="e.g. Wraith">
-                    </div>
-                    <div>
-                        <label class="label-mini">RARITY</label>
-                        <div class="btn-group" id="rarityButtons"></div>
-                    </div>
+
                     <div class="row-2">
                         <div>
                             <label class="label-mini">CURRENCY</label>
-                            <select id="formCurrency"></select>
+                            <select id="formCurrency">
+                                <option value="AC">Apex Coins</option>
+                                <option value="CM">Crafting Metals</option>
+                                <option value="Shards">Shards</option>
+                                <option value="Free">Free</option>
+                            </select>
                         </div>
                         <div>
                             <label class="label-mini">COST</label>
-                            <input type="number" id="formCost">
+                            <input type="number" id="formCost" value="1800">
                         </div>
                     </div>
-                    <div>
-                        <label class="label-mini">PRIORITY</label>
-                        <div class="btn-group" id="priorityButtons"></div>
-                    </div>
-                    <div>
-                        <label class="label-mini">NOTES (OPTIONAL)</label>
-                        <textarea id="formNotes" rows="2"></textarea>
-                    </div>
-                    <button id="saveItemBtn" class="btn-primary full-width">ADD TO WISHLIST</button>
+
+                    <button id="saveItemBtn" class="btn-primary full-width">CONFIRM ADDITION</button>
                 </div>
             </div>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
